@@ -60,32 +60,83 @@
         }
 
         function confirm() {
+            var server_ip = "180.76.52.218";
+            var server_port = "7172";
             weui.form.validate('#danmaku', function() {
                 var loading = weui.loading('发送中...');
-                var input = document.getElementById("danmaku").value;
-                if (isNull(input)) {
-                    setTimeout(loading.hide(), 1500);
-                    var emptyerr = weui.dialog({
-                        title: '错误',
-                        content: '弹幕内容不能为空',
-                        className: 'empty-content-error-dialog',
-                        buttons: [{
-                            label: '确定',
-                            type: 'primary',
-                            onClick: function() {
-                                emptyerr.hide();
-                            }
-                        }]
-                    });
-                } else {
-                    $.post("http://180.76.52.218:7172/1/push/all", JSON.stringify({
-                        "time": msname,
-                        "msg_body": input
-                    }), "json")
+                var user_input = document.getElementById("danmaku").value;
+                if (isNull(user_input)) {
                     setTimeout(function() {
                         loading.hide();
-                        weui.toast('操作成功', 1500);
+                        var empty_string_err = weui.dialog({
+                            title: '错误',
+                            content: '弹幕内容不能为空',
+                            className: 'empty-string-error-dialog',
+                            buttons: [{
+                                label: '确定',
+                                type: 'primary',
+                                onClick: function() {
+                                    empty_string_err.hide();
+                                }
+                            }]
+                        });
                     }, 1500);
+                } else {
+                    var bj_time = "";
+                    var get_time = false;
+                    $.get("http://cgi.im.qq.com/cgi-bin/cgi_svrtime", function(data) {
+                        bj_time = data;
+                        get_time = true;
+                    })
+                    if ((bj_time != "") && get_time) {
+                        var push_ret = 0;
+                        var post_msg = false;
+                        $.post("http://" + server_ip + ":" + server_port + "/1/push/all", JSON.stringify({
+                            "time": bj_time,
+                            "msg_body": user_input
+                        }), function(data) {
+                            post_msg = true;
+                            ret = data.ret;
+                        }, "json")
+                        if (post_msg && (push_ret == 1)) {
+                            setTimeout(function() {
+                                loading.hide();
+                                weui.toast('操作成功', 1500);
+                            }, 1500);
+                        } else {
+                            setTimeout(function() {
+                                loading.hide()
+                                var send_msg_err = weui.dialog({
+                                    title: '错误',
+                                    content: '与服务器连接失败，请检查网络并重试',
+                                    className: 'send-msg-error-dialog',
+                                    buttons: [{
+                                        label: '确定',
+                                        type: 'primary',
+                                        onClick: function() {
+                                            send_msg_err.hide();
+                                        }
+                                    }]
+                                });
+                            }, 1500);
+                        }
+                    } else {
+                        setTimeout(function() {
+                            loading.hide()
+                            var get_time_err = weui.dialog({
+                                title: '错误',
+                                content: '获取时间错误，请检查网络并重试',
+                                className: 'get-time-error-dialog',
+                                buttons: [{
+                                    label: '确定',
+                                    type: 'primary',
+                                    onClick: function() {
+                                        get_time_err.hide();
+                                    }
+                                }]
+                            });
+                        }, 1500);
+                    }
                 }
                 return true;
             });
@@ -95,7 +146,8 @@
 
 <body>
     <div class="page">
-        <h1 class="page__title" style="text-align:center">场下弹幕互动——弹幕发送页</h1>
+        <h1 class="page__title" style="text-align:center">场下弹幕互动</h1>
+        <h2 class="page__title" style="color:#888;text-align:center">弹幕发送页</h2>
     </div>
     <div class="weui-cells weui-cells_form">
         <div class="weui-cell">
