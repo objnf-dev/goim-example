@@ -94,7 +94,7 @@
         function confirm() {
             //验证表单是否为空
             weui.form.validate('#danmaku', function() {
-                var loading = weui.loading('发送中...');
+                window.loading = weui.loading('发送中...');
                 window.user_input = document.getElementById("danmaku").value;
                 if (isNull(window.user_input)) {
                     //为空后的操作
@@ -117,7 +117,7 @@
                         window.user_input = "";
                         //直接返回，不继续执行
                         return true;
-                    }, 1500);
+                    }, 500);
                 }
             });
             //尝试获取时间
@@ -126,7 +126,7 @@
             if (!window.get_time) {
                 //显示“获取时间错误”弹框
                 setTimeout(function() {
-                    loading.hide()
+                    window.loading.hide()
                     var get_time_err = weui.dialog({
                         title: '错误',
                         content: '获取时间错误，请检查网络并重试',
@@ -139,7 +139,7 @@
                             }
                         }]
                     });
-                }, 1500);
+                }, 500);
                 //变量恢复初始值
                 window.bj_time = "";
                 window.get_time = false;
@@ -152,8 +152,9 @@
             //尝试发送消息
             postmsg();
             if ((!window.post_msg) || (window.push_ret != 1)) {
+                //显示发送失败错误
                 setTimeout(function() {
-                    loading.hide()
+                    window.loading.hide()
                     var send_msg_err = weui.dialog({
                         title: '错误',
                         content: '与服务器连接失败，请检查网络并重试',
@@ -166,13 +167,27 @@
                             }
                         }]
                     });
+                    //变量恢复初始值
+                    window.bj_time = "";
+                    window.get_time = false;
+                    window.user_input = "";
+                    window.post_msg = false;
+                    window.push_ret = 0;
                     return true;
-                }, 1500);
+                }, 500);
             }
+            //显示操作成功
             setTimeout(function() {
-                loading.hide();
-                weui.toast('操作成功', 1500);
-            }, 1500);
+                window.loading.hide();
+                weui.toast('操作成功', 1000);
+            }, 1000);
+            //变量恢复初始值
+            window.bj_time = "";
+            window.get_time = false;
+            window.user_input = "";
+            window.post_msg = false;
+            window.push_ret = 0;
+            //返回
             return true;
         }
     </script>
