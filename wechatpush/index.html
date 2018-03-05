@@ -98,7 +98,7 @@
             timexhr.done(function(data) {
                 var timeobj = JSON.parse(data);
                 //获取时间码，并转换为字符串
-                bj_time = timeobj.sysTime1.toString();
+                bj_time = timeobj.sysTime2.toString();
                 //输出调试信息
                 console.log("time=" + bj_time + ",input=" + user_input);
                 //尝试发送消息
@@ -115,6 +115,7 @@
                     //变量恢复初始值
                     bj_time = "";
                     user_input = "";
+					document.getElementById("danmaku").reset();
                 });
                 postxhr.fail(function() {
                     //显示发送失败错误
