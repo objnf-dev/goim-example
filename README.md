@@ -12,4 +12,4 @@ Notice:You need to add CORS support to goim manually cause the offical version o
 The same as vuejq,but it sends messages via websocket connection instead.Notice:IE/Edge currently not support websocket.  
 
 ### wechatpush  
-A demo page using jQuery,weui and weui.js . Aims at creating a "Send Messages"pages in Wechat.  
+A demo page using jQuery,weui and weui.js . Aims at creating a "Send Messages" page in Wechat.  
