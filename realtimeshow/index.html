@@ -14,7 +14,7 @@
         var danmaku = new Danmaku();
         danmaku.init({
             container: document.getElementById("showbox"),
-            speed: 144,
+            speed: 130,
             comments: []
         });
 
@@ -66,9 +66,9 @@
                                 text: data.body.msg_body,
                                 mode: 'rtl',
                                 style: {
-                                    fontSize: '15px',
+                                    fontSize: '20px',
                                     color: '#ffffff',
-                                    textShadow: '-1px -1px #000, -1px 1px #000, 1px -1px #000, 1px 1px #000'
+                                    textShadow: '2px 2px #A9A9A9'
                                 }
                             };
                             danmaku.emit(comment);
